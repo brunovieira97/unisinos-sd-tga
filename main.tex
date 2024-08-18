@@ -1,0 +1,187 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% How to use writeLaTeX: 
+%
+% You edit the source code here on the left, and the preview on the
+% right shows you the result within a few seconds.
+%
+% Bookmark this page and share the URL with your co-authors. They can
+% edit at the same time!
+%
+% You can upload figures, bibliographies, custom classes and
+% styles using the files menu.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[12pt]{article}
+
+\usepackage{sbc-template}
+
+\usepackage{graphicx,url}
+
+\usepackage{listings}
+
+%\usepackage[brazil]{babel}   
+\usepackage[utf8]{inputenc}  
+
+     
+\sloppy
+
+\title{Redis\\Uma apresentação do Middleware}
+
+\author{Bruno Peres Vieira\inst{1}, Orlando Vilmar Rodrigues Hidalgo Junior\inst{1} }
+
+
+\address{Escola Politécnica -- Universidade do Vale do Rio dos Sinos
+  (UNISINOS)\\
+  São Leopoldo, Rio Grande do Sul -- Brasil
+\email{\{brunopv, orlandohj\}@edu.unisinos.br}
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+This article presents a research and analysis of the Redis middleware. A multi-purposed data store structure, Redis is versatile and performatic, having many characteristics that are able to highlight itself among the vast variety of tools and technologies currently available on the software development market. On this issue, the technology's utilization ways are further detailed, as well as Redis' role alongside applications, also bringing the authors perception about the positive and negative takes on adopting such solution.
+\end{abstract}
+     
+\begin{resumo} 
+Este artigo apresenta uma análise e pesquisa sobre o middleware Redis. Uma estrutura de armazenamento de dados multi-propósito, o Redis é versátil, performático e possui diversas características que o destacam dentre a vasta variedade de tecnologias e ferramentas hoje disponíveis no mercado de desenvolvimento. Nesta publicação, é detalhada a forma de utilização, papel do Redis junto à aplicações e também a percepção dos autores acerca dos pontos positivos e negativos da adoção de tal solução.
+\end{resumo}
+
+
+\section{Introdução}
+
+Middlewares são softwares que fornecem serviços e recursos comuns a aplicações, tais como gerenciamento de dados, sistemas de mensageria, autenticação e variados outros \cite{redhat2020}. Através de sua utilização, desenvolvedores podem criar aplicações mais rapidamente e basear-se em soluções estabelecidas e confiáveis. Quando desenvolvendo aplicações para ambientes de nuvem (Cloud Computing), Middlewares tornam-se essenciais, fazendo-se presentes no dia-a-dia de incontáveis profissionais.
+
+O Redis é uma estrutura de armazenamento de dados em memória altamente popular e um Middleware amplamente utilizado. Sua versatilidade permite que seja utilizado para diversas finalidades, incluindo um banco de dados não-relacional completo, armazenamento cache e message broker (serviço intermediário de mensageria) \cite{redis2020}. O suporte à várias estruturas de dados auxilia em seu reconhecimento no mercado, mais um sinal de sua versatilidade e que impulsiona sua adoção.
+
+Neste artigo, serão apresentados maiores detalhes sobre o Redis, detalhes de sua implementação e de seu funcionamento. Pontos positivos e negativos de sua utilização e adoção como um Middleware serão elencados, bem como maiores informações sobre sua posição no mercado atualmente, concorrentes enfrentados, e noções de como aplicar esta ferramenta ao desenvolvimento de um sistema de software.
+
+\section{Origem}
+
+Iniciado em 2009, o projeto Redis foi uma iniciativa de Salvatore Sanfilippo, um desenvolvedor de software italiano que buscava uma ferramenta que o permitisse controlar dados analíticos sobre o website de sua startup em tempo real. Após tentativas de implementação fazendo uso de soluções como MySQL, deparando-se com problemas de escalabilidade, latência e "gargalos" devido à quantidade de operações de escrita de dados, Salvatore viu a oportunidade de resolver sua necessidade através de uma nova solução, utilizando conceitos de estrutura de dados como listas encadeadas (Linked Lists) \cite{bernardi2011}.
+
+A partir daí, iniciou-se a implementação do Redis como um protótipo, que rapidamente ganhou apoio de diferentes comunidades de desenvolvedores, especialmente as focadas na linguagem Ruby. Escrito em ANSI C, o Redis é facilmente portátil, interoperável e o suporte da comunidade serviu exclusivamente para apoiar e impulsionar tal característica. A adoção do Redis por empresas como GitHub e Instagram, em estágios ainda iniciais da tecnologia, também contribuiu para melhorias e atraiu visibilidade.
+
+O nome Redis é um acrônimo, proveniente de Remote Dictionary Server (Servidor de Dicionário Remoto, em inglês). Seu foco é em velocidade e escalabilidade, com uso de diversas estruturas de dados distintas, como Strings, Listas, Mapas, Conjuntos, Conjuntos Ordenados, Streams, Índices Espaciais, entre outros \cite{redis2020}.
+
+Após a contratação de Sanfilippo pela VMware, empresa focada em soluções de virtualização e computação em nuvem, o projeto Redis foi também patrocinado pela companhia. Patrocinadores posteriores do projeto incluem Linode, Slicehost, Citrusbyte e Pivotal. Desde 2015, o projeto está sob a tutela e patrocínio da Redis Labs, e possui código aberto (open source) sob a licença BSD.
+
+\section{Funcionalidades}
+
+O Redis é mais conhecido por ser um SGBD (Sistema de Gerenciamento de Banco de Dados) não-relacional (ou NoSQL), mas na verdade, o Redis é uma estrutura de armazenamento de dados em memória principal apenas, que pode ser aproveitada para aplicações distintas, como o já mencionado banco de dados, armazenamento de cache ou ainda \textit{message broker} \cite{aws2020}. Funções incluídas no Redis compreendem replicação, transações, diferentes níveis de persistência em disco e alta disponibilidade através da solução Redis Sentinel, bem como particionamento automático utilizando Redis Cluster \cite{redis2020}.
+
+\subsection{Banco de Dados Não-Relacional}
+
+Destacável como um SGBD não-relacional que destoa dos demais, seu diferencial é a utilização da memória principal do computador para armazenamento das informações. Redis traz grandes vantagens quando utilizado como um banco de dados, eliminando a complexidade de comunicação aplicação – cache – banco de dados, e introduzindo a comunicação direta entre aplicação e Redis (o qual dispõe de ambas funcionalidades), dessa forma mantendo uma camada única de dados \cite{davis2020}. 
+O uso da memória principal traz excelentes resultados para operações de escrita e leitura de dados, uma vez que os barramentos e os módulos de armazenamento possuem velocidades largamente superiores quando comparados ao conjunto que envolve a memória secundária. 
+
+\subsection{Sistema de Cache}
+Ao utilizar dados de um banco de dados, a performance está condicionada à latência e vazão deste. Os dados do Redis ficam armazenados na memória principal do servidor, diferente de bancos de dados como Microsoft SQL, PostgreSQL, MongoDB entre outros, que armazenam o conteúdo em disco, sendo esse o tradicional HD ou SSD. A utilização do Redis na camada de cache da aplicação torna o acesso aos dados muito mais rápido, executado mais operações com um tempo de resposta muito menor, chegando a apresentar um tempo de leitura/escrita abaixo de um milissegundo. 
+
+Uma aplicação que não faz uso de cache, interage com o banco a cada request, já com o uso do cache um único request para banco é feito, e todos os demais acessos consultarão o cache diretamente \cite{haber:16}. As transações e comandos executados por meio do Redis são atômicas e garantem a integridade dos dados em cache. Além disso, é possível executar vários comandos em lote com o uso de uma pipeline, reduzindo o tráfego na rede e o tempo de request. 
+
+\subsection{Replicação Mestre-Escravo}
+Os dados no Redis e o serviço que ele fornece podem se tornar altamente disponíveis por meio do uso do mecanismo de replicação integrado do Redis, que suporta replicação assíncrona, onde os dados podem ser replicados para vários servidores de réplica. Um cache Redis pode ser configurado com uma réplica (escravo), que é continuamente atualizada com alterações no master (serviço primário). Isso fornece melhor desempenho de leitura e recuperação mais rápida quando o servidor principal sofre uma interrupção.
+
+Para garantir a disponibilidade do cache, alguns processos de monitoramento e gerenciamento são empregados para monitorar os processos do cache e gerenciar o failover quando necessário. Quando há alguma interrupção no link entre mestre e escravo, a replica tenta realizar uma sincronização parcial, obtendo somente os comandos que não foram sincronizados na desconexão. Quando esse mecanismo falha, a replica solicita uma sincronização completa por snapshot.
+
+\subsection{Persistência em disco}
+A persistência de dados pode ser alcançada por Append Only File (AOF) e Snapshot (RDB). O método AOF consiste em escrever todos os comandos utilizados, para que essas etapas possam ser restauradas caso os dados em RAM sejam perdidos por uma falha no sistema. Já o método de Snapshot é uma cópia completa dos dados, realizada em um intervalo de tempo maior com chances de perda de dados de até uma hora.  
+
+O RDB é ideal para rotinas de backup, possibilitando uma cópia a cada uma hora, por exemplo. Outro ponto positivo é o uso de um único arquivo compacto,  o que facilita a recuperação de falhas, principalmente em grandes bases de dados. Essa solução não é adequada para os casos em que a perda de informação importa, uma vez que devido seu maior intervalo de tempo entre cópias, dados podem ser perdidos dentro desse intervalo. Por outro lado, o AOF minimiza a perda de dados e apresenta mecanismos de recuperação para que mesmo com uma falha no meio da execução do comando, esse seja recuperado. Porém, os arquivos originados do AOF são geralmente maiores que os do RDB e o processo de recuperação pode se tornar bem mais demorado quando comparado ao snapshot \cite{macedo:14}.
+
+
+\subsection{Mensageria}
+Redis implementa o padrão Publish/Subscribe através dos comandos SUBSCRIBE, UNSUBSCRIBE e PUBLISH. As mensagens são publicadas em canal e os Subscribers que possam se interessar nesta, fazem a inscrição no respectivo canal \cite{faria2019}. Para se inscrever em um ou mais canais, o cliente envia um SUBSCRIBE indicando os canais:
+\begin{lstlisting}[language=Sql]
+SUBSCRIBE computacao unisinos
+\end{lstlisting}
+
+As mensagens publicadas são arrays com três elementos. O tipo subscribe  apresenta a confirmação de inscrição em um canal como primeiro argumento, o canal como segundo argumento e o número de canais como terceiro argumento. O unsubscribe se diferencia pela confirmação de desinscrição de um canal. Já o tipo message indica que uma mensagem foi recebida por um canal como primeiro argumento, o nome do canal como segundo argumento e o terceiro argumento é a mensagem de fato.
+
+\section{Aplicações}
+Além do uso em banco de dados e mensageria, Redis é muito popular entre desenvolvedores de jogos, que o utilizam para criar um placar em tempo real, utilizando de suas estruturas de dado para manter um ranking de jogadores. Sistemas simples também acabam considerando a utilização do Redis, graças à sua API de simples utilização e sua velocidade nas operações de leitura e escrita de dados. Um exemplo são sistemas para guichês de atendimento baseados em senhas, que beneficiam-se da atomicidade e rapidez das operações e evitam controles complexos para a chamada de clientes em duplicidade.
+
+Outra aplicação conhecida é o uso do Redis para armazenamento da sessão de usuários, tirando proveito de suas consultas de baixa latência e resiliência para gerência de dados em aplicações web.
+A inteligência artificial também se beneficia da leitura e escrita aprimorada, uma vez que massas de dados fazem parte da realidade de muitas aplicações, como em serviços financeiros e serviços em tempo real. Nesses casos, o acesso em memória acelera a construção e treino de modelos de machine learning.
+
+\section{Utilização}
+
+A API básica do Redis provê uma quantidade menor de comandos quando comparada à SGBDs mais estabelecidos, especialmente os relacionais. Isso, porém, não representa limitação nenhuma, dando liberdade para que cada usuário da ferramenta trabalhe com os comandos básicos para atingir cenários mais complexos, em cenários mais singulares \cite{paksula:10}.
+
+Os comandos disponíveis são:
+
+\begin{itemize}
+    \item \textbf{SET \{chave\} \{valor\}:} atribui um valor à uma chave. Se a chave especificada já existir, o valor é sobrescrito; senão, é criada a chave.
+    \item \textbf{GET \{chave\}:} busca o valor de uma ou mais chaves.
+    \item \textbf{APPEND \{chave\} \{valor\}:} realiza concatenação de dados, entre o valor já existente na chave especificada e o especificado no comando.
+    \item \textbf{EXISTS \{chave\}:} permite verificar se determinada chave já está persistida em memória.
+    \item \textbf{DEL \{chave\}:} remove uma chave e seu valor da memória.
+\end{itemize}
+
+Para demonstração e detalhamento melhor da utilização do Redis na prática, foi escolhido o cenário de integração do middleware junto à uma aplicação Java para Web, que utiliza Maven para controle de dependências. Primeiramente, é preciso definir um cliente Redis para permitir a interação entre a aplicação e o servidor. Foi escolhido o Lettuce, um dos clientes mais populares na comunidade atualmente.
+
+Deve-se adicionar a dependência ao projeto, utilizando os seguintes valores:
+\newline
+\textbf{Group ID: } biz.paluch.redis
+\newline
+\textbf{Artifact ID: }lettuce
+
+Após garantir que os binários necessários foram adicionados ao repositório, basta criar um novo objeto de RedisClient, utilizando uma RedisURI como parâmetro. Este RedisClient é então utilizado para obter-se uma conexão (objeto RedisConnection). O código para atingir isso é o seguinte:
+
+\begin{lstlisting}[language=Java]
+import com.lambdaworks.redis.*;
+
+public class ConnectToRedis {
+  public static void main(String[] args) {
+  
+    RedisURI uri =
+        RedisURI.create("redis://<senha>@<host>:<porta>");
+  
+    RedisClient redisClient =
+        new RedisClient(uri);
+    
+    RedisConnection<String, String> connection =
+        redisClient.connect();
+
+    connection.close();
+    redisClient.shutdown();
+  }
+}
+\end{lstlisting}
+
+Com isso, temos acesso à API do Redis através do Lettuce, podendo utilizar as mesmas operações já mencionadas de leitura e escrita de dados, chamando-as via métodos Java.
+
+\section{Concorrentes}
+Dentre os concorrentes do Redis, destacam-se o Apache Kafka, Amazon MQ, RabbitMQ e ActiveMQ para atuação como Message Broker. Quanto a SGBDs que concorrem com o Redis, existem duas características a levar em conta: o uso da memória principal para armazenamento dos dados; e o fato de se tratar de um banco de dados não-relacional (NoSQL) e que atua também como armazenamento cache. Quando trata-se de SGBDs In-Memory, os principais concorrentes do middleware são o Aerospike DBS, Apache Ignite, SAP HANA e SQLite; focando em SGBDs NoSQL e armazenamento cache, são populares o DynamoDB, Ehcache, Azure Cosmos e Hazelcast.
+
+Ainda analisando o armazenamento cache, um forte concorrente do Redis é o Memcached, serviço de caching open source, focado na escalabilidade vertical e computação distribuída (desenvolvido para processamento multi-thread) \cite{vicente2020}. O Memcached se apresenta, então, como uma ótima e simples ferramenta para soluções que dependam somente de cache. Já o Redis, principalmente pela possibilidade de persistência em disco, traz consigo funcionalidades mais complexas e que abrangem mais casos de uso, escalando horizontalmente devido ao fato de ser single-thread e apresentar suporte nativo para clusterização \cite{chen:16}.
+
+\section{Prós e Contras}
+Com base na análise e estudos realizados sobre o middleware, é possível elencar pontos positivos e negativos acerca de sua utilização.
+
+Como pontos positivos, destaca-se sua simplicidade: a não utilização de conceitos como tabelas, linhas e colunas, graças à sua arquitetura não-relacional, faz com que a interação com o SGBD seja mais rápida e prática, diminuindo a curva de adaptação do desenvolvedor para a tecnologia. Além disso, o Redis traz uma API (coleção de comandos) simples e enxuta.
+
+A performance é outro ponto digno de destaque, atingindo 110.000 SETs (criação de combinações chave-valor) e 81.000 GETs (busca de valores através da chave) por segundo. Por possuir diversas otimizações para velocidade, a maioria das operações são realizadas pelo middleware em tempo e espaço constante \cite{branagan:17}.
+
+A comunidade é outro aspecto extremamente positivo. Por tratar-se de um projeto open-source, a comunidade tende a contribuir e manter o projeto, trazendo grandes melhorias e correções com transparência. Atualmente, existem mais de 2 bilhões de containers Docker operando com a imagem Redis. A ferramenta foi eleita como o banco de dados mais amado pelos desenvolvedores no website StackOverflow, voltado para troca de experiência e dúvidas sobre desenvolvimento de software, por 3 anos consecutivos \cite{redislabs2020}.
+
+Existem, porém, alguns pontos negativos observáveis na adoção do Redis, embora isso seja intimamente conectado à arquitetura, natureza e objetivo das aplicações que podem ou não fazer seu uso. Dentre os pontos não tão favoráveis, figuram a baixa compatibilidade com ambientes Microsoft Windows, sistema operacional muito utilizado por desenvolvedores; a mudança de "filosofia" enfrentada ao trabalhar com armazenamento em memória principal, que embora possua soluções nativas para caching e duplicação de dados, deve ser enfrentada (quando muitos bancos de dados tradicionais - leia-se Relacionais - não exigem tal preocupação inicialmente).
+
+Um último ponto observável que não é positivo para o Redis é o da perda de dados. Embora conte com sistemas para mitigar estes cenários, o Redis ainda é mais suscetível a falhas desta natureza, especialmente quando empregado como solução de mensageria (Message Broker). Isto ocorre pois uma das estratégias de salvamento realiza escritas continuamente em disco, afetando de forma exagerada a performance; já a outra (Snapshot) realiza escritas pontuais em intervalos de tempo, sendo sua grande fraqueza a possibilidade de perder-se até uma hora de mensagens. Tal cenário em mensageria é extremamente negativo, representando uma quantidade altíssima de mensagens perdidas.
+
+\section{Conclusão}
+O Redis é um middleware bem estabelecido no mercado e adotado por diversos desenvolvedores na última década. Tendo sido reconhecido como um dos mais amados bancos de dados por profissionais de desenvolvimento de software, é uma ferramenta que hoje supre muito bem as necessidades de quem precisa armazenar dados de forma rápida, prática e escalável para tempos de computação em nuvem e sistemas elásticos.
+
+Neste artigo, além de uma visão geral sobre a tecnologia por trás do Redis, foram apresentados detalhes sobre seus diferentes papéis quando integrado a um software, seja atuando como banco de dados não-relacional, como sistema de armazenamento em cache ou ainda como Message Broker, com mensageria entre diferentes serviços ou sistemas.
+
+Dentre seus inúmeros pontos positivos, destaca-se sua maior particularidade: o uso de memória principal para armazenamento das informações. A absoluta maioria das ferramentas, dentre todas as categorias em que o Redis se enquadra, optam pela utilização da memória secundária, dada sua confiabilidade. O Redis, porém, foca em desempenho: com técnicas para mitigar possíveis perdas de dados, ele beneficia-se largamente do superior desempenho oferecido pelo uso da RAM (Random Access Memory), permitindo a escrita e leitura em tempos quase que integralmente lineares, em tempo e espaço. O suporte à clusterização marca presença também, por meio da utilização de Redis Cluster \cite{li:17}.
+
+Naturalmente, existem pontos negativos para a adoção da tecnologia, associados principalmente ao risco de perda de dados, algo crítico especialmente quando falando de sistemas de mensageria. É claro, porém, o altamente positivo potencial da plataforma, especialmente em tempos de containerização de aplicações e processamento em nuvem escalável, desde que faça sentido sua integração à determinada aplicação. Como toda ferramenta ou tecnologia, o Redis tem um propósito, e um público-alvo, e facilmente observa-se que, ainda relativamente novo no mercado, mostra-se capaz de atender com distinção a ambos.
+
+\bibliographystyle{sbc}
+\bibliography{sbc-template}
+
+\end{document}
